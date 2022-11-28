@@ -14,6 +14,8 @@ protocol MovieDetailViewModel: BaseViewModel {
     var stateClosure: ((Result<MovieDetailViewModelImpl.ViewInteractivity, Error>) -> ())? { set get }
 
     func getMovieDetail(id: String)
+    
+    func getMovieForDetail() -> MovieDetail?
 
 }
 
@@ -33,7 +35,7 @@ final class MovieDetailViewModelImpl: MovieDetailViewModel {
                     let result = try JSONDecoder().decode(MovieDetail.self, from: data)
                     self.detailResult = result
                     self.start()
-                    //print(result)
+                    print(result)
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -48,6 +50,11 @@ final class MovieDetailViewModelImpl: MovieDetailViewModel {
 
     func start() {
         self.stateClosure?(.success(.updateMovieDetail))
+    }
+    
+    func getMovieForDetail() -> MovieDetail? {
+        guard let movieDetail = self.detailResult else { return nil }
+        return movieDetail
     }
 }
 

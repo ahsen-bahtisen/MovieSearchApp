@@ -9,10 +9,13 @@ import UIKit
 
 class MovieDetailViewController: BaseViewController {
 
-    private var viewModel: MovieDetailViewModel!
+    private var detailviewModel: MovieDetailViewModel!
     
-    var details: [MovieDetail] = []
+    var detail: MovieDetail?
+    
+    
    
+    var movieId: String = ""
     
     @IBOutlet weak var posterImageView: UIImageView!
     
@@ -48,12 +51,23 @@ class MovieDetailViewController: BaseViewController {
     
     
     override func viewDidLoad() {
+        
+        //detail = detailviewModel.getMovieDetail(id: <#T##String#>)
         super.viewDidLoad()
         
         setupNavBar(title: "Title", leftIcon: "left-arrow", rightIcon: "like-empty", leftItemAction: #selector(backPage), rightItemAction: #selector(favoriteButton))
            
         setupView()
-        viewModel.getMovieDetail(id: "tt0120338")
+       
+        
+        movieYearLabel.text = movieId
+        
+        detailviewModel.start()
+        detailviewModel.getMovieDetail(id: movieId)
+        detail = detailviewModel.getMovieForDetail()
+        movieActorsLabel.text = detail?.actors
+        
+        
     }
     
   
@@ -117,10 +131,31 @@ class MovieDetailViewController: BaseViewController {
         goBack()
     }
 
-    func inject(viewModel: MovieDetailViewModel){
-        self.viewModel = viewModel
+    func inject(detailviewModel: MovieDetailViewModel){
+        self.detailviewModel = detailviewModel
     }
 
     
 
+}
+
+
+extension MovieDetailViewController {
+    func addObservationListener() {
+        self.detailviewModel.stateClosure = { [weak self] result in
+            switch result {
+            case .success(let data):
+                self?.handleClosureData(data: data)
+            case .failure(_):
+                break
+            }
+        }
+    }
+    private func handleClosureData(data: MovieDetailViewModelImpl.ViewInteractivity) {
+        switch data {
+        case .updateMovieDetail:
+            print("detay sayfası açıldı")
+        }
+    }
+    
 }

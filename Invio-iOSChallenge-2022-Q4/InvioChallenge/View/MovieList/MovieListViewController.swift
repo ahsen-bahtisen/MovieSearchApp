@@ -73,13 +73,20 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         //let url = "http://www.omdbapi.com/?i=\(movies[indexPath.row].id)&apikey=9f5de465"
-        var comeId = viewModel.getMovieForCell(at: indexPath)
+        let comeId = viewModel.getMovieForCell(at: indexPath)
+        
         print(comeId?.id)
+        
+        
     
         let detailVC = MovieDetailViewController(nibName: MovieDetailViewController.className, bundle: nil)
+        
         let movieDetailVM = MovieDetailViewModelImpl()
-        detailVC.inject(viewModel: movieDetailVM)
+        detailVC.inject(detailviewModel: movieDetailVM)
         navigationController?.pushViewController(detailVC, animated: true)
+        
+        
+        
     }
 }
 
