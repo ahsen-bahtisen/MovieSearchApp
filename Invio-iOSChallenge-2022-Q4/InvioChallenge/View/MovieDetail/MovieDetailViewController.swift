@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Kingfisher
+
 
 class MovieDetailViewController: BaseViewController {
 
@@ -44,33 +46,59 @@ class MovieDetailViewController: BaseViewController {
     @IBOutlet weak var countryLabel: UILabel!
     @IBOutlet weak var boxOfficeLabel: UILabel!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        posterImageView.cornerRadius = 12
-    }
+
     
     
     override func viewDidLoad() {
         
-        //detail = detailviewModel.getMovieDetail(id: <#T##String#>)
+        
         super.viewDidLoad()
         
-        setupNavBar(title: "Title", leftIcon: "left-arrow", rightIcon: "like-empty", leftItemAction: #selector(backPage), rightItemAction: #selector(favoriteButton))
+        
            
         setupView()
        
         
-        movieYearLabel.text = movieId
         
+        addObservationListener()
         detailviewModel.start()
         detailviewModel.getMovieDetail(id: movieId)
         detail = detailviewModel.getMovieForDetail()
-        movieActorsLabel.text = detail?.actors
         
+      
+    }
+    
+
+  
+    @objc func movieDetailTransfer(_ notification: NSNotification){
+        
+        let detailTransfer = (notification.userInfo as! [String: MovieDetail])["movieDetail"]
+        
+        setupNavBar(title: detailTransfer?.title, leftIcon: "left-arrow", rightIcon: "like-empty", leftItemAction: #selector(backPage), rightItemAction: #selector(favoriteButton))
+        
+        movieDurationLabel.text = detailTransfer?.runTime 
+        movieYearLabel.text = detailTransfer?.year
+        movieLanguageLabel.text = detailTransfer?.language
+        movieRatingLabel.text = "\(detailTransfer!.ratings!)/10"
+        
+        moviePlotLabel.text = detailTransfer?.plot
+        movieDirectorLabel.text = detailTransfer?.director
+        movieWriterLabel.text = detailTransfer?.writer
+        movieActorsLabel.text = detailTransfer?.actors
+        movieCountryLabel.text = detailTransfer?.country
+        movieBoxOfficeLabel.text = detailTransfer?.boxOffice
+        
+        //resim getirme işlemi
+        posterImageView.cornerRadius = 12
+        if let url = URL(string: detailTransfer?.poster ?? ""){
+                DispatchQueue.main.async {
+                    self.posterImageView.kf.setImage(with: url)
+                }
+            }
         
     }
     
-  
+    
     
     private func setupView() {
       
@@ -154,8 +182,9 @@ extension MovieDetailViewController {
     private func handleClosureData(data: MovieDetailViewModelImpl.ViewInteractivity) {
         switch data {
         case .updateMovieDetail:
-            print("detay sayfası açıldı")
+            NotificationCenter.default.addObserver(self, selector: #selector(self.movieDetailTransfer), name: .init(rawValue:"notificationMovieDetail"), object: nil)
         }
     }
     
 }
+

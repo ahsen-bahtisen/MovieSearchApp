@@ -78,8 +78,9 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
         print(comeId?.id)
         
         
-    
         let detailVC = MovieDetailViewController(nibName: MovieDetailViewController.className, bundle: nil)
+        
+        detailVC.movieId = comeId?.id ?? ""
         
         let movieDetailVM = MovieDetailViewModelImpl()
         detailVC.inject(detailviewModel: movieDetailVM)

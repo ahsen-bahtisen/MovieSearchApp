@@ -34,8 +34,13 @@ final class MovieDetailViewModelImpl: MovieDetailViewModel {
                 do{
                     let result = try JSONDecoder().decode(MovieDetail.self, from: data)
                     self.detailResult = result
-                    self.start()
                     print(result)
+                    
+                    DispatchQueue.main.async {
+                        let userInfo : [String: MovieDetail] = ["movieDetail": self.detailResult!]
+                        
+                        NotificationCenter.default.post(name: .init(rawValue: "notificationMovieDetail"), object: nil, userInfo: userInfo as [AnyHashable: Any])
+                    }
                 } catch {
                     print(error.localizedDescription)
                 }
