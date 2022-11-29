@@ -22,6 +22,8 @@ protocol MovieListViewModel: BaseViewModel {
     func getMovieForCell(at indexPath: IndexPath) -> Movie?
     
     func downloadMovies(search:String)
+    
+    func favoriMovies(favoriId: String)
 
 }
 
@@ -32,7 +34,7 @@ final class MovieListViewModelImpl: MovieListViewModel {
     var searchResult : Search?
 
     func downloadMovies(search: String) {
-        //http://www.omdbapi.com/?s=thor&page1&apikey=9f5de465"
+        
             AF.request("https://www.omdbapi.com/?s=\(search)&plot=full&page=\(1)&apikey=9f5de465",method: .get).response { response in
                 if let data = response.data {
                     do{
@@ -47,6 +49,27 @@ final class MovieListViewModelImpl: MovieListViewModel {
     }
 
     
+    var favoriMovies: MovieDetail?
+    
+    var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
+    
+    func favoriMovies(favoriId: String){
+        for favortiteAdded in favoriArr{
+            AF.request("http://www.omdbapi.com/?i=\(favoriId)apikey=9f5de465",method: .get).response { response in
+                if let data = response.data{
+                    do{ let result = try JSONDecoder().decode(MovieDetail.self, from: data)
+                        self.favoriMovies = result
+                        
+                            let userInfo: [String:MovieDetail] = ["favori": self.favoriMovies!]
+                            NotificationCenter.default.post(name: .init(rawValue: "Favori"), object: nil, userInfo: userInfo as [AnyHashable:Any])
+                        
+                    }catch{
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
     
     var stateClosure: ((Result<ViewInteractivity, Error>) -> ())?
     
@@ -54,6 +77,7 @@ final class MovieListViewModelImpl: MovieListViewModel {
         self.stateClosure?(.success(.updateMovieList))
     }
 }
+
 
 // MARK: ViewModel to ViewController interactivity
 extension MovieListViewModelImpl {

@@ -14,7 +14,7 @@ protocol MovieDetailViewModel: BaseViewModel {
     var stateClosure: ((Result<MovieDetailViewModelImpl.ViewInteractivity, Error>) -> ())? { set get }
 
     func getMovieDetail(id: String)
-    
+    /// - Returns: MovieDetail  datası
     func getMovieForDetail() -> MovieDetail?
 
 }
@@ -22,19 +22,16 @@ protocol MovieDetailViewModel: BaseViewModel {
 
 final class MovieDetailViewModelImpl: MovieDetailViewModel {
 
-    
     var detailResult: MovieDetail?
     
     func getMovieDetail(id: String) {
-        
-        //NotificationCenter.default.addObserver(self, selector: funcSelector!, name: .init(rawValue: "DetailTransfer"), object: nil)
     
         AF.request("http://www.omdbapi.com/?i=\(id)&apikey=9f5de465",method: .get).response { response in
             if let data = response.data {
                 do{
                     let result = try JSONDecoder().decode(MovieDetail.self, from: data)
                     self.detailResult = result
-                    print(result)
+                    //print(result)
                     
                     DispatchQueue.main.async {
                         let userInfo : [String: MovieDetail] = ["movieDetail": self.detailResult!]

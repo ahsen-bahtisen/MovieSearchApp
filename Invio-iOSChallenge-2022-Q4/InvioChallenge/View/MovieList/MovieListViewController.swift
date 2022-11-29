@@ -19,6 +19,7 @@ class MovieListViewController: BaseViewController {
     private var detailViewModel: MovieDetailViewModel!
     var movies: [Movie] = []
     var detailMovies: [MovieDetail] = []
+    var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +68,28 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
         guard let movie = viewModel.getMovieForCell(at: indexPath) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: MovieListTableViewCell.className, for: indexPath) as! MovieListTableViewCell
         cell.setupCell(movie: movie)
+        
+        cell.addFavori = { sender in
+            if cell.likeButton.currentImage == UIImage(named: "like-fill"){
+                cell.likeButton.setImage(UIImage(named: "like-empty"), for: .normal)
+                self.favoriArr.removeAll(where: {$0 == movie.id})
+                UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
+                UserDefaults.standard.synchronize()
+            }
+            else{
+               cell.likeButton.setImage(UIImage(named: "like-fill"), for: .normal)
+                self.favoriArr.append(movie.id)
+                UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
+                UserDefaults.standard.synchronize()
+            }
+        }
+        
+        if favoriArr.contains(movie.id) {
+            cell.likeButton.setImage(UIImage(named: "like-fill"), for: .normal)
+        }else{
+            cell.likeButton.setImage(UIImage(named: "like-empty"), for: .normal)
+        }
+        
         return cell
     }
     
@@ -75,7 +98,7 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
         //let url = "http://www.omdbapi.com/?i=\(movies[indexPath.row].id)&apikey=9f5de465"
         let comeId = viewModel.getMovieForCell(at: indexPath)
         
-        print(comeId?.id)
+        //print(comeId?.id)
         
         
         let detailVC = MovieDetailViewController(nibName: MovieDetailViewController.className, bundle: nil)
@@ -85,9 +108,7 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
         let movieDetailVM = MovieDetailViewModelImpl()
         detailVC.inject(detailviewModel: movieDetailVM)
         navigationController?.pushViewController(detailVC, animated: true)
-        
-        
-        
+ 
     }
 }
 

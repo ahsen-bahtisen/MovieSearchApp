@@ -18,6 +18,8 @@ class MovieListTableViewCell: UITableViewCell {
     @IBOutlet weak var movieTypeLabel: UILabel!
     @IBOutlet weak var movieImdbLabel: UILabel!
     
+    var addFavori: ((Any) -> Void)?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         posterImageView.cornerRadius = 12
@@ -36,11 +38,12 @@ class MovieListTableViewCell: UITableViewCell {
                 }
             }
         }
+    
 
     
     @IBAction func likeButtonTapped(_ sender: Any) {
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            self?.likeButton.setImage(UIImage(named: "like-fill"), for: .normal)
+        DispatchQueue.main.async { [weak self] in
+            self?.addFavori?(sender)
         }
     }
 }
