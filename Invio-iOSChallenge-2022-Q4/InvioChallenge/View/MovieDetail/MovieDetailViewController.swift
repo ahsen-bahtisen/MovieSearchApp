@@ -17,7 +17,7 @@ class MovieDetailViewController: BaseViewController {
     var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
     
    
-    var movieId: String = ""
+    var movieId: String?
     
     @IBOutlet weak var posterImageView: UIImageView!
     
@@ -57,25 +57,30 @@ class MovieDetailViewController: BaseViewController {
 
         addObservationListener()
         detailviewModel.start()
-        detailviewModel.getMovieDetail(id: movieId)
-        detail = detailviewModel.getMovieForDetail()
    
     }
   
+    @objc func idTransfer(_ notification: NSNotification){
+        movieId = (notification.userInfo as! [String: String])["id"]!
+        detailviewModel.getMovieDetail(id: movieId ?? "")
+    }
+    
+    
     @objc func movieDetailTransfer(_ notification: NSNotification){
         
         let detailTransfer = (notification.userInfo as! [String: MovieDetail])["movieDetail"]
         
         setupNavBar(title: detailTransfer?.title, leftIcon: "left-arrow", rightIcon: "like-empty", leftItemAction: #selector(backPage), rightItemAction: #selector(favoriteButton))
         
-        if favoriArr.contains(movieId){
+        if favoriArr.contains(movieId ?? ""){
             navigationItem.rightBarButtonItem?.image = UIImage(named: "like-fill")?.withRenderingMode(.alwaysOriginal)
         }else{
             navigationItem.rightBarButtonItem?.image = UIImage(named: "like-empty")?.withRenderingMode(.alwaysOriginal)
         }
         
-    
-        movieDurationLabel.text = detailTransfer?.runTime 
+        
+        movieDurationLabel.text = detailTransfer?.runTime
+       
         movieYearLabel.text = detailTransfer?.year
         movieLanguageLabel.text = detailTransfer?.language
         movieRatingLabel.text = "\(detailTransfer!.ratings!)/10"
@@ -157,7 +162,7 @@ class MovieDetailViewController: BaseViewController {
             UserDefaults.standard.synchronize()
         } else {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "like-fill")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: nil)
-            self.favoriArr.append(self.movieId)
+            self.favoriArr.append(self.movieId ?? "")
             UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
             UserDefaults.standard.synchronize()
         }
@@ -189,6 +194,8 @@ extension MovieDetailViewController {
     private func handleClosureData(data: MovieDetailViewModelImpl.ViewInteractivity) {
         switch data {
         case .updateMovieDetail:
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(self.idTransfer), name: .init(rawValue:"idTransfer"), object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(self.movieDetailTransfer), name: .init(rawValue:"notificationMovieDetail"), object: nil)
         }
     }

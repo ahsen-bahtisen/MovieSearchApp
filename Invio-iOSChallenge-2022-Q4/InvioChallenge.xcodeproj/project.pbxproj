@@ -28,8 +28,6 @@
 		40C4F0972921152E00B9823A /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C4F0962921152E00B9823A /* Movie.swift */; };
 		7AB8732D2930EA5300ADC393 /* MovieDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB8732C2930EA5300ADC393 /* MovieDetailViewModel.swift */; };
 		7AB8732F2930EDAC00ADC393 /* MovieDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB8732E2930EDAC00ADC393 /* MovieDetail.swift */; };
-		7AB87333293103CD00ADC393 /* FavoriMoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB87331293103CD00ADC393 /* FavoriMoviesViewController.swift */; };
-		7AB87334293103CD00ADC393 /* FavoriMoviesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7AB87332293103CD00ADC393 /* FavoriMoviesViewController.xib */; };
 		7AB873372931056B00ADC393 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB873362931056B00ADC393 /* Roboto-Bold.ttf */; };
 		7AB873392931057400ADC393 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB873382931057400ADC393 /* Roboto-Medium.ttf */; };
 		7AB8733B2931058300ADC393 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AB8733A2931058300ADC393 /* Roboto-Regular.ttf */; };
@@ -65,8 +63,6 @@
 		40C4F0962921152E00B9823A /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		7AB8732C2930EA5300ADC393 /* MovieDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailViewModel.swift; sourceTree = "<group>"; };
 		7AB8732E2930EDAC00ADC393 /* MovieDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetail.swift; sourceTree = "<group>"; };
-		7AB87331293103CD00ADC393 /* FavoriMoviesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriMoviesViewController.swift; sourceTree = "<group>"; };
-		7AB87332293103CD00ADC393 /* FavoriMoviesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FavoriMoviesViewController.xib; sourceTree = "<group>"; };
 		7AB873362931056B00ADC393 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		7AB873382931057400ADC393 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		7AB8733A2931058300ADC393 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
@@ -166,7 +162,6 @@
 		4098C80D291FF5500036833E /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7AB873302931039E00ADC393 /* FavoriteMovies */,
 				7AC930EE2930BB630023E57E /* MovieDetail */,
 				4098C80F291FF5770036833E /* Splash */,
 				4098C81A2920182B0036833E /* MovieList */,
@@ -209,15 +204,6 @@
 				4098C82C29203AFD0036833E /* MovieListTableViewCell.xib */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		7AB873302931039E00ADC393 /* FavoriteMovies */ = {
-			isa = PBXGroup;
-			children = (
-				7AB87331293103CD00ADC393 /* FavoriMoviesViewController.swift */,
-				7AB87332293103CD00ADC393 /* FavoriMoviesViewController.xib */,
-			);
-			path = FavoriteMovies;
 			sourceTree = "<group>";
 		};
 		7AB873352931055400ADC393 /* Fonts */ = {
@@ -321,7 +307,6 @@
 				4098C81E2920195F0036833E /* MovieListViewController.xib in Resources */,
 				4098C7F1291FE12E0036833E /* Assets.xcassets in Resources */,
 				7AB873372931056B00ADC393 /* Roboto-Bold.ttf in Resources */,
-				7AB87334293103CD00ADC393 /* FavoriMoviesViewController.xib in Resources */,
 				7AB873392931057400ADC393 /* Roboto-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,7 +322,6 @@
 				4098C825292027510036833E /* UIView+Ext.swift in Sources */,
 				4098C7E8291FE12B0036833E /* AppDelegate.swift in Sources */,
 				7AB8732F2930EDAC00ADC393 /* MovieDetail.swift in Sources */,
-				7AB87333293103CD00ADC393 /* FavoriMoviesViewController.swift in Sources */,
 				4098C815291FF6160036833E /* UIColor+Ext.swift in Sources */,
 				4098C8202920235C0036833E /* SplashViewModel.swift in Sources */,
 				9C992019292CD67F0004166B /* BaseViewModel.swift in Sources */,

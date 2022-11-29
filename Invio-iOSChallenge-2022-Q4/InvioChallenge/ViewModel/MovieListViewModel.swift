@@ -19,11 +19,13 @@ protocol MovieListViewModel: BaseViewModel {
     /// ViewController' daki tableView için cell datasını döner.
     /// - Parameter indexPath: Görünür cell'in index'i
     /// - Returns: Movie datası
-    func getMovieForCell(at indexPath: IndexPath) -> Movie?
+    func getMovieForCell(at indexPath: IndexPath) -> [Movie]?
     
-    func downloadMovies(search:String)
+    func downloadMovies(search:String, number: Int)
     
     func favoriMovies(favoriId: String)
+    
+    func getMovieDetails(at index: IndexPath)
 
 }
 
@@ -32,20 +34,28 @@ final class MovieListViewModelImpl: MovieListViewModel {
     
     //verileri getirme
     var searchResult : Search?
+    var resultArray: [Movie] = []
 
-    func downloadMovies(search: String) {
+    func downloadMovies(search: String, number: Int) {
         
-            AF.request("https://www.omdbapi.com/?s=\(search)&plot=full&page=\(1)&apikey=9f5de465",method: .get).response { response in
+            AF.request("https://www.omdbapi.com/?s=\(search)&page=\(number)&apikey=9f5de465",method: .get).response { response in
                 if let data = response.data {
                     do{
                         let result = try JSONDecoder().decode(Search.self, from: data)
-                        self.searchResult = result
+                        self.resultArray.append(contentsOf: result.movies!)
                         self.start()
                     } catch {
                         print(error.localizedDescription)
                     }
                 }
             }
+    }
+    
+    func getMovieDetails(at index: IndexPath){
+        DispatchQueue.main.async {
+            let userInfo: [String:String?] = ["id": self.searchResult?.movies?[index.row].id]
+            NotificationCenter.default.post(name: .init(rawValue: "idTransfer"), object: nil, userInfo: userInfo as [AnyHashable:Any])
+        }
     }
 
     
@@ -90,12 +100,13 @@ extension MovieListViewModelImpl {
 // MARK: TableView DataSource
 extension MovieListViewModelImpl {
     func getNumberOfRowsInSection() -> Int {
-        return self.searchResult?.movies?.count ?? 0
+        return self.resultArray.count
        
     }
     
-    func getMovieForCell(at indexPath: IndexPath) -> Movie? {
-        guard let movie = self.searchResult?.movies?[indexPath.row] else { return nil }
+    func getMovieForCell(at indexPath: IndexPath) -> [Movie]? {
+        guard let movie = self.resultArray as [Movie]? else {return nil}
+        //guard let movie = self.searchResult?.movies?[indexPath.row] else { return nil }
         return movie
     }
 }

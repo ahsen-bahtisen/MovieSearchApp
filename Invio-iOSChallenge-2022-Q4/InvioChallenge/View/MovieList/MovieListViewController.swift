@@ -17,6 +17,8 @@ class MovieListViewController: BaseViewController {
     
     private var viewModel: MovieListViewModel!
     private var detailViewModel: MovieDetailViewModel!
+    
+    var pageNumber = 1
     var movies: [Movie] = []
     var detailMovies: [MovieDetail] = []
     var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
@@ -53,7 +55,7 @@ class MovieListViewController: BaseViewController {
     }
     
     @IBAction func searchButtonTapped(_ sender: Any) {
-        viewModel.downloadMovies(search: searchField.text ?? "")
+        viewModel.downloadMovies(search: searchField.text ?? "", number: pageNumber)
     }
 }
 
@@ -67,24 +69,24 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let movie = viewModel.getMovieForCell(at: indexPath) else { return UITableViewCell() }
         let cell = tableView.dequeueReusableCell(withIdentifier: MovieListTableViewCell.className, for: indexPath) as! MovieListTableViewCell
-        cell.setupCell(movie: movie)
+        cell.setupCell(movie: movie[indexPath.row])
         
         cell.addFavori = { sender in
             if cell.likeButton.currentImage == UIImage(named: "like-fill"){
                 cell.likeButton.setImage(UIImage(named: "like-empty"), for: .normal)
-                self.favoriArr.removeAll(where: {$0 == movie.id})
+                self.favoriArr.removeAll(where: {$0 == movie[indexPath.row].id})
                 UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
                 UserDefaults.standard.synchronize()
             }
             else{
                cell.likeButton.setImage(UIImage(named: "like-fill"), for: .normal)
-                self.favoriArr.append(movie.id)
+                self.favoriArr.append(movie[indexPath.row].id)
                 UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
                 UserDefaults.standard.synchronize()
             }
         }
         
-        if favoriArr.contains(movie.id) {
+        if favoriArr.contains(movie[indexPath.row].id) {
             cell.likeButton.setImage(UIImage(named: "like-fill"), for: .normal)
         }else{
             cell.likeButton.setImage(UIImage(named: "like-empty"), for: .normal)
@@ -95,22 +97,33 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        //let url = "http://www.omdbapi.com/?i=\(movies[indexPath.row].id)&apikey=9f5de465"
-        let comeId = viewModel.getMovieForCell(at: indexPath)
         
-        //print(comeId?.id)
-        
+        viewModel.getMovieDetails(at: indexPath)
         
         let detailVC = MovieDetailViewController(nibName: MovieDetailViewController.className, bundle: nil)
         
-        detailVC.movieId = comeId?.id ?? ""
+      
         
         let movieDetailVM = MovieDetailViewModelImpl()
         detailVC.inject(detailviewModel: movieDetailVM)
         navigationController?.pushViewController(detailVC, animated: true)
  
     }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if ((scrollView.contentOffset.y + scrollView.frame.size.height) > scrollView.contentSize.height){
+            pageNumber += 1
+            viewModel.downloadMovies(search: self.searchField.text!, number: pageNumber)
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
+        }
+    }
 }
+
+
+    
 
 
 // MARK: - ViewModel Listener
