@@ -26,15 +26,21 @@ protocol MovieListViewModel: BaseViewModel {
     func favoriMovies(favoriId: String)
     
     func getMovieDetails(at index: IndexPath)
+    
+    func updateArray()
 
 }
 
 final class MovieListViewModelImpl: MovieListViewModel {
+    func updateArray() {
+        resultArray.removeAll()
+    }
+    
     
     
     //verileri getirme
-    var searchResult : Search?
-    var resultArray: [Movie] = []
+    private var searchResult : Search?
+    private var resultArray: [Movie] = []
 
     func downloadMovies(search: String, number: Int) {
         
@@ -66,7 +72,6 @@ final class MovieListViewModelImpl: MovieListViewModel {
     var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
     
     func favoriMovies(favoriId: String){
-        for favortiteAdded in favoriArr{
             AF.request("http://www.omdbapi.com/?i=\(favoriId)apikey=9f5de465",method: .get).response { response in
                 if let data = response.data{
                     do{ let result = try JSONDecoder().decode(MovieDetail.self, from: data)
@@ -80,7 +85,6 @@ final class MovieListViewModelImpl: MovieListViewModel {
                     }
                 }
             }
-        }
     }
     
     var stateClosure: ((Result<ViewInteractivity, Error>) -> ())?
@@ -108,7 +112,6 @@ extension MovieListViewModelImpl {
     
     func getMovieForCell(at indexPath: IndexPath) -> [Movie]? {
         guard let movie = self.resultArray as [Movie]? else {return nil}
-        //guard let movie = self.searchResult?.movies?[indexPath.row] else { return nil }
         return movie
     }
 }

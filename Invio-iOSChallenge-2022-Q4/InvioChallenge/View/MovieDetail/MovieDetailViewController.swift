@@ -59,13 +59,6 @@ class MovieDetailViewController: BaseViewController {
    
     }
     
-  
-   /* @objc func idTransfer(_ notification: NSNotification){
-        movieId = (notification.userInfo as! [String:String])["id"]!
-        detailviewModel.getMovieDetail(id: movieId ?? "")
-    }*/
-    
-    
     
     @objc func movieDetailTransfer(_ notification: NSNotification){
         
@@ -73,7 +66,7 @@ class MovieDetailViewController: BaseViewController {
         
         setupNavBar(title: detailTransfer?.title, leftIcon: "left-arrow", rightIcon: "like-empty", leftItemAction: #selector(backPage), rightItemAction: #selector(favoriteButton))
         
-        if favoriArr.contains(movieId ?? ""){
+        if favoriArr.contains(movieId){
             navigationItem.rightBarButtonItem?.image = UIImage(named: "like-fill")?.withRenderingMode(.alwaysOriginal)
         }else{
             navigationItem.rightBarButtonItem?.image = UIImage(named: "like-empty")?.withRenderingMode(.alwaysOriginal)
@@ -162,7 +155,7 @@ class MovieDetailViewController: BaseViewController {
             UserDefaults.standard.synchronize()
         } else {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "like-fill")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: nil)
-            self.favoriArr.append(self.movieId ?? "")
+            self.favoriArr.append(self.movieId)
             UserDefaults.standard.set(self.favoriArr, forKey: "favorites")
             UserDefaults.standard.synchronize()
         }
@@ -195,7 +188,6 @@ extension MovieDetailViewController {
         switch data {
         case .updateMovieDetail:
             
-            //NotificationCenter.default.addObserver(self, selector: #selector(self.idTransfer), name: .init(rawValue:"idTransfer"), object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(self.movieDetailTransfer), name: .init(rawValue:"notificationMovieDetail"), object: nil)
         }
     }

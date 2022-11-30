@@ -55,6 +55,8 @@ class MovieListViewController: BaseViewController {
     }
     
     @IBAction func searchButtonTapped(_ sender: Any) {
+        viewModel.updateArray()
+        pageNumber = 1
         viewModel.downloadMovies(search: searchField.text ?? "", number: pageNumber)
     }
 }
@@ -97,18 +99,12 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-         
-         //print(comeId?.id)
-        //detailVC.movieId = comeId?[indexP] ?? ""
-        
-        
         viewModel.getMovieDetails(at: indexPath)
         let comeId = viewModel.getMovieForCell(at: indexPath)
         let detailVC = MovieDetailViewController(nibName: MovieDetailViewController.className, bundle: nil)
         let movieDetailVM = MovieDetailViewModelImpl()
         detailVC.inject(detailviewModel: movieDetailVM)
         navigationController?.pushViewController(detailVC, animated: true)
-        
         detailVC.movieId = comeId![indexPath.row].id
         
     }
