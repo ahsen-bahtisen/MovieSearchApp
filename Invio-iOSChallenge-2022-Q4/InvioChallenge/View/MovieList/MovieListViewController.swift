@@ -55,9 +55,19 @@ class MovieListViewController: BaseViewController {
     }
     
     @IBAction func searchButtonTapped(_ sender: Any) {
-        viewModel.updateArray()
-        pageNumber = 1
-        viewModel.downloadMovies(search: searchField.text ?? "", number: pageNumber)
+        
+        if searchField.text == ""{
+            let alert = UIAlertController(title: "Warning!", message: "Please enter a movie name!", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Okay", style: .cancel)
+            alert.addAction(okAction)
+            
+            self.present(alert, animated: true)
+        }else{
+            viewModel.updateArray()
+            pageNumber = 1
+            viewModel.downloadMovies(search: searchField.text ?? "", number: pageNumber)
+
+        }
     }
 }
 

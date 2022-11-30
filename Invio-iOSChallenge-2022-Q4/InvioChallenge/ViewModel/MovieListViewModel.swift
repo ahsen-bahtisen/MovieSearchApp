@@ -21,21 +21,26 @@ protocol MovieListViewModel: BaseViewModel {
     /// - Returns: Movie datası
     func getMovieForCell(at indexPath: IndexPath) -> [Movie]?
     
+    //verileri getirme
     func downloadMovies(search:String, number: Int)
     
+    //favorileri getirme
     func favoriMovies(favoriId: String)
     
+    //detayları getirme
     func getMovieDetails(at index: IndexPath)
     
+    //arama için film listesini temizleme
     func updateArray()
 
 }
 
 final class MovieListViewModelImpl: MovieListViewModel {
+    
+    
     func updateArray() {
         resultArray.removeAll()
     }
-    
     
     
     //verileri getirme
