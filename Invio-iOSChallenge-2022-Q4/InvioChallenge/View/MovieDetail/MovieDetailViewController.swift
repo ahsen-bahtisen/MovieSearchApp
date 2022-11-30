@@ -17,7 +17,7 @@ class MovieDetailViewController: BaseViewController {
     var favoriArr = UserDefaults.standard.stringArray(forKey: "favorites") ?? [String]()
     
    
-    var movieId: String?
+    var movieId: String = ""
     
     @IBOutlet weak var posterImageView: UIImageView!
     
@@ -48,22 +48,23 @@ class MovieDetailViewController: BaseViewController {
     
 
     
-    
     override func viewDidLoad() {
                 
         super.viewDidLoad()
    
         setupView()
-
         addObservationListener()
         detailviewModel.start()
+        detailviewModel.getMovieDetail(id: movieId)
    
     }
+    
   
-    @objc func idTransfer(_ notification: NSNotification){
-        movieId = (notification.userInfo as! [String: String])["id"]!
+   /* @objc func idTransfer(_ notification: NSNotification){
+        movieId = (notification.userInfo as! [String:String])["id"]!
         detailviewModel.getMovieDetail(id: movieId ?? "")
-    }
+    }*/
+    
     
     
     @objc func movieDetailTransfer(_ notification: NSNotification){
@@ -80,7 +81,6 @@ class MovieDetailViewController: BaseViewController {
         
         
         movieDurationLabel.text = detailTransfer?.runTime
-       
         movieYearLabel.text = detailTransfer?.year
         movieLanguageLabel.text = detailTransfer?.language
         movieRatingLabel.text = "\(detailTransfer!.ratings!)/10"
@@ -195,7 +195,7 @@ extension MovieDetailViewController {
         switch data {
         case .updateMovieDetail:
             
-            NotificationCenter.default.addObserver(self, selector: #selector(self.idTransfer), name: .init(rawValue:"idTransfer"), object: nil)
+            //NotificationCenter.default.addObserver(self, selector: #selector(self.idTransfer), name: .init(rawValue:"idTransfer"), object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(self.movieDetailTransfer), name: .init(rawValue:"notificationMovieDetail"), object: nil)
         }
     }

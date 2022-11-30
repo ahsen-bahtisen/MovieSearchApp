@@ -52,9 +52,11 @@ final class MovieListViewModelImpl: MovieListViewModel {
     }
     
     func getMovieDetails(at index: IndexPath){
+        
         DispatchQueue.main.async {
             let userInfo: [String:String?] = ["id": self.searchResult?.movies?[index.row].id]
             NotificationCenter.default.post(name: .init(rawValue: "idTransfer"), object: nil, userInfo: userInfo as [AnyHashable:Any])
+            
         }
     }
 
