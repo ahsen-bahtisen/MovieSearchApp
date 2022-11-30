@@ -109,15 +109,37 @@ extension MovieListViewController: UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    
+    private func spinenFooter() -> UIView{
+        let footerView = UIView(frame: CGRect(x: 0, y:0, width: view.frame.size.width, height: 100))
+        
+        let spinner = UIActivityIndicatorView()
+        spinner.center = footerView.center
+        footerView.addSubview(spinner)
+        spinner.startAnimating()
+        
+        return footerView
+    }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if ((scrollView.contentOffset.y + scrollView.frame.size.height) > scrollView.contentSize.height){
-            pageNumber += 1
-            viewModel.downloadMovies(search: self.searchField.text!, number: pageNumber)
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+        if !tableView.visibleCells.isEmpty{
             
+            if ((tableView.contentOffset.y ) > (tableView.contentSize.height - 100 - tableView.frame.size.height )){
+                
+                if pageNumber != 100{
+                    self.tableView.tableFooterView = spinenFooter()
+                    pageNumber += 1
+                    viewModel.downloadMovies(search: self.searchField.text!, number: pageNumber)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }else{
+                    self.tableView.tableFooterView = nil
+                }
+   
+            }
         }
+
     }
 }
 
